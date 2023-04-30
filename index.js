@@ -88,4 +88,8 @@ function newGame() {
   else {
     console.log(`You lose! (${playerWins} - ${computerWins})`);
   }
+
+  console.info("Call newGame() to play again!");
 }
+
+console.info("Greetings! To start a new game, call newGame().");
