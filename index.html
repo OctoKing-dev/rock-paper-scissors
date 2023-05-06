@@ -7,7 +7,28 @@
   <title>Rock, Paper, Scissors</title>
 </head>
 <body>
-  <p>This game currently lacks a GUI, and can only be played in the console!</p>
+  <header>
+    <h1>Rock, Paper, Scissors!</h1>
+  </header>
+  <div class="output-container">
+    <div class="scores-container">
+      <div class="score-container">
+        <p>YOU:</p>
+        <p id="player-score">0</p>
+      </div>
+      <div class="score-container">
+        <p>CPU:</p>
+        <p id="cpu-score">0</p>
+      </div>
+    </div>
+    <p id="result-text"></p>
+  </div>
+  <div class="choices">
+    <button data-choice="rock">Rock</button>
+    <button data-choice="paper">Paper</button>
+    <button data-choice="scissors">Scissors</button>
+  </div>
+  <button id="playButton">New Game</button>
   <script src="index.js"></script>
 </body>
 </html>
