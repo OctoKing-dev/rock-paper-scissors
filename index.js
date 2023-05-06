@@ -51,15 +51,15 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
-// Run a new 5-round game and announce results at the end.
+// Run a new game and announce results at the end.
 function newGame() {
   let computerWins = 0;
   let playerWins = 0;
-  const rounds = 5;
+  const winningScore = 5;
 
-  console.info(`Playing for ${rounds} rounds.`);
+  console.info(`Playing for First to ${winningScore} Wins.`);
 
-  for (let i=1; i < rounds; i++) {
+  do {
     const playerSelection = getPlayerChoice();
     const computerSelection = getComputerChoice();
     const result = playRound(playerSelection, computerSelection);
@@ -77,7 +77,7 @@ function newGame() {
         computerWins++;
         break;
     }
-  }
+  } while (computerWins < 5 && playerWins < 5);
 
   if (computerWins === playerWins) {
     console.log(`There was a tie! (${playerWins} - ${computerWins})`);
