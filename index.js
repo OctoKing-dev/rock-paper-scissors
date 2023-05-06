@@ -1,95 +1,132 @@
 const MOVES_LIST = ["ROCK", "PAPER", "SCISSORS"];
 
+const playerScore = document.getElementById('player-score'),
+  cpuScore = document.getElementById('cpu-score'),
+  resultText = document.getElementById('result-text');
+
+function updateScore() {
+  playerScore.textContent = playerWins;
+  cpuScore.textContent = computerWins;
+}
+
+function setResultText(text) {
+  resultText.textContent = text;
+}
+
 function getComputerChoice() {
   return MOVES_LIST[Math.floor(Math.random() * MOVES_LIST.length)]; // Random choice
 }
 
-function getPlayerChoice() {
-  let playerChoice;
-  // Loop until valid choice entered
-  while (!playerChoice) {
-    playerChoice = prompt("Choose your move! (Rock, Paper, Scissors)");
-    if (!playerChoice || !(MOVES_LIST.includes(playerChoice.toUpperCase()))) {
-      playerChoice = null;
-    }
-  }
+function playerChoice(choice) {
+  if (!choice || !(MOVES_LIST.includes(choice.toUpperCase()))) return;
 
-  return playerChoice.toUpperCase();
+  playRound(choice.toUpperCase());
 }
 
-function playRound(playerSelection, computerSelection) {
+const choiceButtons = document.querySelectorAll('.choices button');
+choiceButtons.forEach(button => button.addEventListener('click', 
+  () => {playerChoice(button.getAttribute('data-choice'));}
+));
+
+function playRound(playerSelection) {
+  if (!gameInProgress) return;
+  const computerSelection = getComputerChoice();
+  let result;
   if (playerSelection === computerSelection) {
-    return "TIE";
+    result = "TIE";
   }
   switch (playerSelection) {
     case "ROCK":
       switch (computerSelection) {
         case "PAPER":
-          return "LOSS";
+          result = "LOSS";
+          break;
         case "SCISSORS":
-          return "WIN";
+          result = "WIN";
+          break;
       }
       break;
     
     case "PAPER":
       switch (computerSelection) {
         case "ROCK":
-          return "WIN";
+          result = "WIN";
+          break;
         case "SCISSORS":
-          return "LOSS";
+          result = "LOSS";
+          break;
       }
       break;
     
     case "SCISSORS":
       switch (computerSelection) {
         case "ROCK":
-          return "LOSS";
+          result = "LOSS";
+          break;
         case "PAPER":
-          return "WIN";
+          result = "WIN";
+          break;
       }
       break;
   }
+
+  switch (result) {
+    case "TIE":
+      setResultText(`There was a tie! ${playerSelection} matches ${computerSelection}!`);
+      break;
+    case "WIN":
+      setResultText(`You win! ${playerSelection} beats ${computerSelection}!`);
+      playerWins++;
+      break;
+    case "LOSS":
+      setResultText(`You lose! ${playerSelection} loses to ${computerSelection}!`);
+      computerWins++;
+      break;
+  }
+
+  updateScore();
+
+  roundEnded();
+}
+
+function roundEnded() {
+  if (computerWins < 5 && playerWins < 5) return;
+
+  if (computerWins === playerWins) {
+    setResultText(`There was a tie! (${playerWins} - ${computerWins})`);
+  }
+  else if (playerWins > computerWins) {
+    setResultText(`You win! (${playerWins} - ${computerWins})`);
+  }
+  else {
+    setResultText(`You lose! (${playerWins} - ${computerWins})`);
+  }
+
+  gameInProgress = false;
+  playButton.style.display = "block";
 }
 
 // Run a new game and announce results at the end.
+let computerWins = 0;
+let playerWins = 0;
+let winningScore = 5;
+let gameInProgress = false;
 function newGame() {
-  let computerWins = 0;
-  let playerWins = 0;
-  const winningScore = 5;
+  if (gameInProgress) return;
 
-  console.info(`Playing for First to ${winningScore} Wins.`);
+  gameInProgress = true;
+  
+  computerWins = 0;
+  playerWins = 0;
+  updateScore();
 
-  do {
-    const playerSelection = getPlayerChoice();
-    const computerSelection = getComputerChoice();
-    const result = playRound(playerSelection, computerSelection);
-    
-    switch (result) {
-      case "TIE":
-        console.log(`There was a tie! ${playerSelection} matches ${computerSelection}!`);
-        break;
-      case "WIN":
-        console.log(`You win! ${playerSelection} beats ${computerSelection}!`);
-        playerWins++;
-        break;
-      case "LOSS":
-        console.log(`You lose! ${playerSelection} loses to ${computerSelection}!`);
-        computerWins++;
-        break;
-    }
-  } while (computerWins < 5 && playerWins < 5);
+  document.getElementById('gamemode-text').textContent = `First to ${winningScore} Wins.`;
 
-  if (computerWins === playerWins) {
-    console.log(`There was a tie! (${playerWins} - ${computerWins})`);
-  }
-  else if (playerWins > computerWins) {
-    console.log(`You win! (${playerWins} - ${computerWins})`);
-  }
-  else {
-    console.log(`You lose! (${playerWins} - ${computerWins})`);
-  }
+  setResultText("Make your choice!");
 
-  console.info("Call newGame() to play again!");
+  console.log("New game started.");
 }
 
-console.info("Greetings! To start a new game, call newGame().");
+const playButton = document.getElementById('playButton');
+playButton.addEventListener('click', function() { playButton.style.display = "none"; newGame();});
+
